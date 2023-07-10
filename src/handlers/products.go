@@ -9,11 +9,35 @@ import (
 	data "github.com/jigarnayak1290/goLang/src/Data"
 )
 
+// const (
+// 	host     = "localhost"
+// 	port     = 5432
+// 	user     = "postgres"
+// 	password = "mysecretpassword"
+// 	dbname   = "postgres"
+// )
+
 type Products struct {
 	l *log.Logger
 }
 
 func NewProducts(l *log.Logger) *Products {
+	// psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	// 	"password=%s dbname=%s sslmode=disable",
+	// 	host, port, user, password, dbname)
+	// db, err := sql.Open("postgres", psqlInfo)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer db.Close()
+
+	// err = db.Ping()
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// //fmt.Println("Successfully connected!")
+
 	return &Products{l}
 }
 
@@ -37,7 +61,7 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		g := reg.FindAllStringSubmatch(r.URL.Path, -1)
 
 		if len(g) != 1 {
-			p.l.Println("Invalid URL more than one ID", len(g))
+			p.l.Println("Invalid URL ID is not one -> ", len(g))
 			http.Error(rw, "Invalid URI", http.StatusBadRequest)
 			return
 		}
