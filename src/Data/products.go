@@ -8,14 +8,14 @@ import (
 )
 
 type Product struct {
-	NACCS_Code int     `json:"NACCS_Code"`
-	Name       string  `json:"name"`
-	Desc       string  `json:"desc"`
-	Price      float32 `json:"price"`
-	Owner_ID   string  `json:"Owner_ID"`
-	CreatedOn  string  `json:"-"`
-	UpdatedOn  string  `json:"-"`
-	DeletedOn  string  `json:"-"`
+	ID         int    `json:"ID"`
+	Name       string `json:"name"`
+	Desc       string `json:"desc"`
+	NACCS_Code string `json:"NACCS_Code"`
+	Owner_ID   string `json:"Owner_ID"`
+	CreatedOn  string `json:"-"`
+	UpdatedOn  string `json:"-"`
+	DeletedOn  string `json:"-"`
 }
 
 func (p *Product) FromJSON(r io.Reader) error {
@@ -35,12 +35,23 @@ func GetProducts() Products {
 }
 
 func AddProduct(p *Product) {
-	p.NACCS_Code = getNextID()
+	p.ID = getNextID()
 	ProductList = append(ProductList, p)
 }
 
-func UpdateProduct(NACCS_Code int, p *Product) error {
-	_, pos, err := findProduct(NACCS_Code)
+func UpdateProduct(ID int, p *Product) error {
+	_, pos, err := findProduct(ID)
+	if err != nil {
+		return err
+	}
+
+	p.ID = ID
+	ProductList[pos] = p
+	return nil
+}
+
+func UpdateProductByNACCSCode(NACCS_Code string, p *Product) error {
+	_, pos, err := findProductByNACCSCode(NACCS_Code)
 	if err != nil {
 		return err
 	}
@@ -52,7 +63,16 @@ func UpdateProduct(NACCS_Code int, p *Product) error {
 
 var ErrProductNotFound = fmt.Errorf("Product not found")
 
-func findProduct(NACCS_Code int) (*Product, int, error) {
+func findProduct(ID int) (*Product, int, error) {
+	for i, p := range ProductList {
+		if p.ID == ID {
+			return p, i, nil
+		}
+	}
+	return nil, -1, ErrProductNotFound
+}
+
+func findProductByNACCSCode(NACCS_Code string) (*Product, int, error) {
 	for i, p := range ProductList {
 		if p.NACCS_Code == NACCS_Code {
 			return p, i, nil
@@ -63,24 +83,24 @@ func findProduct(NACCS_Code int) (*Product, int, error) {
 
 func getNextID() int {
 	lp := ProductList[len(ProductList)-1]
-	return lp.NACCS_Code + 1
+	return lp.ID + 1
 }
 
 var ProductList = []*Product{
 	&Product{
-		NACCS_Code: 1,
+		ID:         1,
 		Name:       "102 SUNG SHIN",
 		Desc:       "Vassel 102",
-		Price:      2.45,
+		NACCS_Code: "13FZ",
 		Owner_ID:   "D70P",
 		CreatedOn:  time.Now().UTC().String(),
 		UpdatedOn:  time.Now().UTC().String(),
 	},
 	&Product{
-		NACCS_Code: 2,
+		ID:         2,
 		Name:       "HYODONG CHEMI",
 		Desc:       "Vassel 107",
-		Price:      1.99,
+		NACCS_Code: "310P",
 		Owner_ID:   "DSRG6",
 		CreatedOn:  time.Now().UTC().String(),
 		UpdatedOn:  time.Now().UTC().String(),
