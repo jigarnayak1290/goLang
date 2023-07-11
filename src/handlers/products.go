@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	//data "github.com/jigarnayak1290/goLang/src/Data"
-	data "github.com/jigarnayak1290/goLang/tree/master/Learn/src/Data"
+	data "github.com/jigarnayak1290/goLang/src/Data"
+	//data "github.com/jigarnayak1290/goLang/tree/master/Learn/src/Data"
 )
 
 // const (
